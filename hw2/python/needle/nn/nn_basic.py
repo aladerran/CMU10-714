@@ -158,7 +158,7 @@ class BatchNorm1d(Module):
         ### BEGIN YOUR SOLUTION
         if self.training:
             mean = ops.summation(x, (0,))/x.shape[0]
-            var = (ops.summation(((x - mean.broadcast_to(x.shape))**2), (0,))/x.shape[0])
+            var = ops.summation(((x - mean.broadcast_to(x.shape))**2), (0,))/x.shape[0]
             self.running_mean = (1 - self.momentum) * self.running_mean + self.momentum * mean.data
             self.running_var = (1 - self.momentum) * self.running_var + self.momentum * var.data
             x_hat = (x - mean.broadcast_to(x.shape)) / (var.broadcast_to(x.shape) + self.eps)**0.5
@@ -166,7 +166,6 @@ class BatchNorm1d(Module):
         else:
             x_hat = (x - self.running_mean.broadcast_to(x.shape)) / (self.running_var.broadcast_to(x.shape) + self.eps)**0.5
             return self.weight.broadcast_to(x.shape) * x_hat + self.bias.broadcast_to(x.shape)
-
         ### END YOUR SOLUTION
 
 
@@ -197,7 +196,9 @@ class Dropout(Module):
     def forward(self, x: Tensor) -> Tensor:
         ### BEGIN YOUR SOLUTION
         if self.training:
-            return x * (init.randb(*x.shape, p=self.p) / (1 - self.p))
+            # return x * (init.randb(*x.shape, p=self.p) / (1 - self.p)) # TODO: figure out why this results in a type casting problem
+            mask = init.randb(*x.shape, p = 1 - self.p)
+            return x * mask / (1 - self.p)
         else:
             return x
         ### END YOUR SOLUTION

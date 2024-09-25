@@ -13,36 +13,38 @@ class MNISTDataset(Dataset):
         transforms: Optional[List] = None,
     ):
         ### BEGIN YOUR SOLUTION
-        with gzip.open(image_filename, 'rb') as img_file:
-            magic_number, num_examples, row, column = struct.unpack('>4I', img_file.read(16))
-            assert(magic_number == 2051)
-            input_dim = row * column
-            X = np.array(struct.unpack(str(input_dim * num_examples) + 'B', img_file.read()), dtype=np.float32).reshape(num_examples, input_dim)
+        with gzip.open(image_filename, "rb") as f:
+            _, img_num, img_row, img_column = struct.unpack(">4i", f.read(16))
+            X = np.frombuffer(f.read(img_num * img_row * img_column), dtype=np.uint8).astype(np.float32).reshape(img_num, img_row * img_column)
             X -= np.min(X)
             X /= np.max(X)
-        with gzip.open(label_filename, 'rb') as label_file:
-            magic_number, num_items = struct.unpack('>2I', label_file.read(8))
-            assert(magic_number == 2049)
-            y = np.array(struct.unpack(str(num_items) + 'B', label_file.read()), dtype=np.uint8)
-        self.images = X
-        self.img_row = row
-        self.img_column = column
-        self.labels = y
-        self.transforms = transforms
+            self.X = X
+
+        with gzip.open(label_filename, "rb") as f:
+            _, label_num = struct.unpack(">2i", f.read(8))
+            y = np.frombuffer(f.read(label_num), dtype=np.uint8)
+            self.y = y
+
+        self.transforms = transforms       
         ### END YOUR SOLUTION
 
     def __getitem__(self, index) -> object:
         ### BEGIN YOUR SOLUTION
-        imgs = self.images[index]
-        labels = self.labels[index]
-        if len(imgs.shape) > 1:
-            imgs = np.array([self.apply_transforms(img.reshape(self.img_row, self.img_column, 1)).reshape(imgs[0].shape) for img in imgs])
-        else:
-            imgs = self.apply_transforms(imgs.reshape(self.img_row, self.img_column, 1)).reshape(imgs.shape)
-        return (imgs, labels)
+        imgs = self.X[index]
+        labels = self.y[index]
+        
+        if len(imgs.shape) == 1:
+            imgs = np.expand_dims(imgs, 0)
+            
+        imgs = np.array([self.apply_transforms(img.reshape(28, 28, 1)).reshape(-1) for img in imgs])
+        
+        if imgs.shape[0] == 1:
+            imgs = imgs[0]
+        
+        return imgs, labels
         ### END YOUR SOLUTION
 
     def __len__(self) -> int:
         ### BEGIN YOUR SOLUTION
-        return self.images.shape[0]
+        return self.X.shape[0]
         ### END YOUR SOLUTION

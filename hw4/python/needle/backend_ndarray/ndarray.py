@@ -247,7 +247,12 @@ class NDArray:
         """
 
         ### BEGIN YOUR SOLUTION
-        raise NotImplementedError()
+        if self.size != prod(new_shape):
+            raise ValueError("Product of current shape is not equal to the product of the new shape")
+        if not self.is_compact():
+            raise ValueError("Matrix is not compact")
+        new_strides = NDArray.compact_strides(new_shape)
+        return self.make(new_shape, strides=new_strides, device=self.device, handle=self._handle, offset=self._offset)
         ### END YOUR SOLUTION
 
     def permute(self, new_axes):
@@ -272,7 +277,11 @@ class NDArray:
         """
 
         ### BEGIN YOUR SOLUTION
-        raise NotImplementedError()
+        if len(new_axes) != self.ndim:
+            raise ValueError("Number of axes in new_axes must be equal to the number of dimensions")
+        new_shape = tuple([self.shape[i] for i in new_axes])
+        new_strides = tuple([self.strides[i] for i in new_axes])
+        return self.make(new_shape, strides=new_strides, device=self.device, handle=self._handle, offset=self._offset)
         ### END YOUR SOLUTION
 
     def broadcast_to(self, new_shape):
@@ -296,7 +305,15 @@ class NDArray:
         """
 
         ### BEGIN YOUR SOLUTION
-        raise NotImplementedError()
+        if len(new_shape) != self.ndim:
+            raise ValueError("Number of axes in new_shape must be equal to the number of dimensions")
+        new_strides = []
+        for i in range(self.ndim):
+            if self.shape[i] == 1:
+                new_strides.append(0)
+            else:
+                new_strides.append(self.strides[i])
+        return self.make(new_shape, strides=tuple(new_strides), device=self.device, handle=self._handle, offset=self._offset)
         ### END YOUR SOLUTION
 
     ### Get and set elements
@@ -363,7 +380,14 @@ class NDArray:
         assert len(idxs) == self.ndim, "Need indexes equal to number of dimensions"
 
         ### BEGIN YOUR SOLUTION
-        raise NotImplementedError()
+        new_shape, new_strides = [], []
+        new_offset = self._offset
+        for i, sl in enumerate(idxs):
+            start, stop, step = sl.start, sl.stop, sl.step
+            new_shape.append(math.ceil((stop - start) / step))
+            new_strides.append(self.strides[i] * step)
+            new_offset += self.strides[i] * start
+        return self.make(new_shape, strides=tuple(new_strides), device=self.device, handle=self._handle, offset=new_offset)
         ### END YOUR SOLUTION
 
     def __setitem__(self, idxs, other):
@@ -398,6 +422,8 @@ class NDArray:
         out = NDArray.make(self.shape, device=self.device)
         if isinstance(other, NDArray):
             assert self.shape == other.shape, "operation needs two equal-sized arrays"
+            if self.device != other.device:
+                other = other.to(self.device)
             ewise_func(self.compact()._handle, other.compact()._handle, out._handle)
         else:
             scalar_func(self.compact()._handle, other, out._handle)
@@ -538,23 +564,23 @@ class NDArray:
 
         if axis is None:
             view = self.compact().reshape((1,) * (self.ndim - 1) + (prod(self.shape),))
-            #out = NDArray.make((1,) * self.ndim, device=self.device)
             out = NDArray.make((1,), device=self.device)
-
         else:
-            if isinstance(axis, (tuple, list)):
-                assert len(axis) == 1, "Only support reduction over a single axis"
-                axis = axis[0]
-
-            view = self.permute(
-                tuple([a for a in range(self.ndim) if a != axis]) + (axis,)
-            )
-            out = NDArray.make(
-                tuple([1 if i == axis else s for i, s in enumerate(self.shape)])
-                if keepdims else
-                tuple([s for i, s in enumerate(self.shape) if i != axis]),
-                device=self.device,
-            )
+            # Ensure axis is a tuple for consistency
+            if not isinstance(axis, (tuple, list)):
+                axis = (axis,)
+            
+            # Handle multiple axes for reduction
+            axis = sorted(axis)  # Sort axis to handle them in order
+            perm = tuple([i for i in range(self.ndim) if i not in axis]) + tuple(axis)
+            view = self.permute(perm).compact()
+            
+            out_shape = [1 if i in axis else s for i, s in enumerate(self.shape)]
+            if not keepdims:
+                out_shape = [s for i, s in enumerate(self.shape) if i not in axis]
+            
+            out = NDArray.make(tuple(out_shape), device=self.device)
+        
         return view, out
 
     def sum(self, axis=None, keepdims=False):
@@ -573,7 +599,15 @@ class NDArray:
         Note: compact() before returning.
         """
         ### BEGIN YOUR SOLUTION
-        raise NotImplementedError()
+        assert len(axes) <= len(self.shape)
+        new_strides = list(self.strides)
+        for axis in axes:
+            new_strides[axis] = - new_strides[axis]
+        new_strides = tuple(new_strides)
+        new_offset = 0
+        for axis in axes:
+            new_offset += (self.shape[axis] - 1) * self.strides[axis]
+        return NDArray.make(self.shape, new_strides, self._device, self._handle, new_offset).compact()
         ### END YOUR SOLUTION
 
     def pad(self, axes):
@@ -583,7 +617,12 @@ class NDArray:
         axes = ( (0, 0), (1, 1), (0, 0)) pads the middle axis with a 0 on the left and right side.
         """
         ### BEGIN YOUR SOLUTION
-        raise NotImplementedError()
+        assert len(axes) == len(self.shape)
+        new_shape = tuple([l + r + n for (l, r), n in zip(axes, self.shape)])
+        arr = self.device.full(new_shape, 0)
+        access = tuple([slice(l, l + n) for (l, _), n in zip(axes, self.shape)])
+        arr[access] = self
+        return arr
         ### END YOUR SOLUTION
 
 def array(a, dtype="float32", device=None):

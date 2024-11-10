@@ -12,20 +12,23 @@ The goal of this course is to provide students an understanding and overview of 
 
 Using Needle, a CNN model (ResNet9) can be trained and evaluated locally:
 
-<div style="display: flex; align-items: center; gap: 10px;">
-    <img src="hw4/ResNet9.png" alt="ResNet9" style="height: 300px;">
-    <img src="hw4/demo.png" alt="demo" style="height: 300px;">
+<div style="display: flex; gap: 10px;">
+    <img src="hw4/ResNet9.png" alt="ResNet9" style="height: 350px; width: calc(50% - 5px);">
+    <img src="hw4/demo.png" alt="demo" style="height: 350px; width: calc(50% - 5px);">
 </div>
 
 Also works for language model (RNN or LSTM), but w. way longer time to train:
 
-<div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-    <img src="hw4/RNN.png" alt="RNN" style="height: 300px;">
+<div style="display: flex; justify-content: center; margin-top: 10px;">
+    <img src="hw4/RNN.png" alt="RNN" style="width: 100%;">
 </div>
+
 
 ## Final Project
 
-*Plan: Add efficient transformer inference backend / multi-GPU training w. MPI. 
+(*co-project for Brown APMA2822B)
+
+Plan: Add efficient transformer inference backend / multi-GPU training w. MPI.
 
 ## Reference
 

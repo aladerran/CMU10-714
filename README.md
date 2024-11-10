@@ -10,13 +10,23 @@ The goal of this course is to provide students an understanding and overview of 
 
 ## Demo
 
-Using Needle, a ResNet9 model can be trained and evaluated locally:
+Using Needle, a CNN model (ResNet9) can be trained and evaluated locally:
 
-<div style="display: flex; justify-content: space-around;">
-    <img src="hw4/ResNet9.png" alt="ResNet9" style="width: 30%;">
-    <img src="hw4/demo.png" alt="demo" style="width: 60%;">
+<div style="display: flex; align-items: center; gap: 10px;">
+    <img src="hw4/ResNet9.png" alt="ResNet9" style="height: 300px;">
+    <img src="hw4/demo.png" alt="demo" style="height: 300px;">
+</div>
+
+Also works for language model (RNN or LSTM), but w. way longer time to train:
+
+<div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+    <img src="hw4/RNN.png" alt="RNN" style="height: 300px;">
 </div>
 
 ## Final Project
 
-*Plan: Add multi-GPU training backend using MPI/NCCL. 
+*Plan: Add efficient transformer inference backend / multi-GPU training w. MPI. 
+
+## Reference
+
+I got to know this course thanks to [csdiy](https://csdiy.wiki/) and I referenced some implenmentations in hw4 from [this repo](https://github.com/PKUFlyingPig/CMU10-714).

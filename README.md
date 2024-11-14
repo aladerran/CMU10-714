@@ -13,23 +13,19 @@ The goal of this course is to provide students an understanding and overview of 
 Using Needle, a CNN model (ResNet9) can be trained and evaluated locally:
 
 <div style="display: flex; gap: 10px;">
-    <img src="hw4/ResNet9.png" alt="ResNet9" style="height: 350px; width: calc(50% - 5px);">
-    <img src="hw4/demo.png" alt="demo" style="height: 350px; width: calc(50% - 5px);">
+    <img src="hw4/ResNet9.png" alt="ResNet9" style="height: 400px; width: calc(50% - 5px);">
+    <img src="hw4/Demo.png" alt="demo" style="height: 400px; width: calc(50% - 5px);">
 </div>
 
-Also works for language model (RNN or LSTM), but w. way longer time to train:
-
-<div style="display: flex; justify-content: center; margin-top: 10px;">
-    <img src="hw4/RNN.png" alt="RNN" style="width: 100%;">
-</div>
+Also works for language model (RNN/LSTM/Transformer), but w. way longer time to train.
 
 
 ## Final Project
 
-(*co-project for Brown APMA2822B)
-
 Plan: Add efficient transformer inference backend / multi-GPU training w. MPI.
+
+(*Co-project for Brown APMA2822B)
 
 ## Reference
 
-I got to know this course thanks to [csdiy](https://csdiy.wiki/) and I referenced some implenmentations in hw4 from [this repo](https://github.com/PKUFlyingPig/CMU10-714).
+I got to know this course thanks to [csdiy](https://csdiy.wiki/) and I referenced some implementations in hw4 & hw4_extra from [this repo](https://github.com/PKUFlyingPig/CMU10-714) and this [PR](https://github.com/dlsyscourse/hw4_extra/pull/1).

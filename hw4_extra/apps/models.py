@@ -41,14 +41,14 @@ class LanguageModel(nn.Module):
     def __init__(self, embedding_size, output_size, hidden_size, num_layers=1,
                  seq_model='rnn', seq_len=1, device=None, dtype="float32"):
         """
-        Consists of an embedding layer, a sequence model (either RNN or LSTM), and a
+        Consists of an embedding layer, a sequence model (RNN, LSTM, or Transformer), and a
         linear layer.
         Parameters:
         output_size: Size of dictionary
         embedding_size: Size of embeddings
-        hidden_size: The number of features in the hidden state of LSTM or RNN
-        seq_model: 'rnn' or 'lstm', whether to use RNN or LSTM
-        num_layers: Number of layers in RNN or LSTM
+        hidden_size: The number of features in the hidden state of RNN, LSTM, or Transformer
+        seq_model: 'rnn', 'lstm', or 'transformer', whether to use RNN, LSTM, or Transformer
+        num_layers: Number of layers in RNN, LSTM, or Transformer
         """
         super(LanguageModel, self).__init__()
         ### BEGIN YOUR SOLUTION
@@ -95,20 +95,14 @@ class LanguageModel(nn.Module):
         x = self.embed(x)  # Shape: (seq_len, bs, embedding_size)
 
         if isinstance(self.seq_model, nn.Transformer):
-            # Transformer doesn't require hidden state, so we only pass x
             x, _ = self.seq_model(x)  # Shape: (seq_len, bs, embedding_size)
-            x = self.linear(x.reshape((seq_len * batch_size, x.shape[-1])))  # Project to output size with embedding_size
-            
-            # Create a dummy hidden state for compatibility
-            h = init.zeros_like(x)  # Or any placeholder compatible with subsequent detach
+            x = self.linear(x.reshape((seq_len * batch_size, x.shape[-1])))  
+            h = init.zeros_like(x)
         else:
-            # RNN and LSTM require hidden state
             if h is None:
-                # Initialize hidden state if not provided
                 h = init.zeros((self.num_layers, batch_size, self.hidden_size), device=x.device, dtype=x.dtype)
             x, h = self.seq_model(x, h)  # Shape: (seq_len, bs, hidden_size)
-            x = self.linear(x.reshape((seq_len * batch_size, self.hidden_size)))  # Project to output size with hidden_size
-
+            x = self.linear(x.reshape((seq_len * batch_size, self.hidden_size))) 
         return x, h
         ### END YOUR SOLUTION
 

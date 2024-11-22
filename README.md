@@ -1,31 +1,33 @@
-# CMU10-714
+# CMU 10-714: Deep Learning Systems
 
-Implementations of Needle, a deep learning library from scratch.
+Implementations of Needle, a deep learning library built from scratch.
 
-- Course Website: <https://dlsyscourse.org/>
+- **Course Website**: [CMU 10-714](https://dlsyscourse.org/)
 
 ## Course Introduction
 
-The goal of this course is to provide students an understanding and overview of the “full stack” of deep learning systems, ranging from the high-level modeling design of modern deep learning systems, to the basic implementation of automatic differentiation tools, to the underlying device-level implementation of efficient algorithms. Throughout the course, students will design and build from scratch a complete deep learning library, capable of efficient GPU-based operations, automatic differentiation of all implemented functions, and the necessary modules to support parameterized layers, loss functions, data loaders, and optimizers. Using these tools, students will then build several state-of-the-art modeling methods, including convolutional networks for image classification and segmentation, recurrent networks and self-attention models for sequential tasks such as language modeling, and generative models for image generation.
+This course aims to provide students with a comprehensive understanding of the “full stack” of deep learning systems. It covers topics ranging from high-level model design to the implementation of automatic differentiation tools and device-level optimization of efficient algorithms.
+
+Students will build a deep learning library from scratch, featuring efficient GPU-based operations, automatic differentiation, and modules for layers, loss functions, data loaders, and optimizers. Using these tools, students will develop state-of-the-art models such as convolutional networks for image classification and segmentation, recurrent networks and self-attention models for sequential tasks, and generative models for image generation.
 
 ## Demo
 
-Using Needle, a CNN model (ResNet9) can be trained and evaluated locally:
+Needle enables local training and evaluation of deep learning models, such as a CNN (ResNet9):
 
 <div style="display: flex; gap: 10px;">
     <img src="hw4/ResNet9.png" alt="ResNet9" style="height: 400px; width: calc(50% - 5px);">
     <img src="hw4/Demo.png" alt="demo" style="height: 400px; width: calc(50% - 5px);">
 </div>
 
-Also works for language model (RNN/LSTM/Transformer), but w. way longer time to train.
-
+Needle also supports language models such as RNNs, LSTMs, and Transformers, though training them requires significantly more time.
 
 ## Final Project
 
-Plan: Add efficient transformer inference backend / multi-GPU training w. MPI.
+#### Final Project: End-to-end Optimization for CNN Deployment
+The project focuses on implementing an efficient ResNet operator backend and distributed training techniques using MPI. For detailed implementation, see the [submodule](https://github.com/aladerran/Project-AMPA_2822B).
 
-(*Co-project for Brown APMA2822B)
+*(Co-project with Brown APMA2822B)*
 
 ## Reference
 
-I got to know this course thanks to [csdiy](https://csdiy.wiki/) and I referenced some implementations in hw4 & hw4_extra from [this repo](https://github.com/PKUFlyingPig/CMU10-714) and this [PR](https://github.com/dlsyscourse/hw4_extra/pull/1).
+I discovered this course through [CSDIY](https://csdiy.wiki/). Some implementations in hw4 and hw4_extra were inspired by [this repository](https://github.com/PKUFlyingPig/CMU10-714) and [this pull request](https://github.com/dlsyscourse/hw4_extra/pull/1).

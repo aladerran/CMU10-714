@@ -21,13 +21,6 @@ Needle enables local training and evaluation of deep learning models, such as a 
 
 Needle also supports language models such as RNNs, LSTMs, and Transformers, though training them requires significantly more time.
 
-## Final Project
-
-#### Final Project: End-to-end Optimization for CNN Deployment
-The project focuses on implementing an efficient ResNet operator backend and distributed training techniques using MPI. For detailed implementation, see the [submodule](https://github.com/aladerran/Project-AMPA_2822B).
-
-*(Co-project with Brown APMA2822B)*
-
 ## Reference
 
 I discovered this course through [CSDIY](https://csdiy.wiki/). Some implementations in hw4 and hw4_extra were inspired by [this repository](https://github.com/PKUFlyingPig/CMU10-714) and [this pull request](https://github.com/dlsyscourse/hw4_extra/pull/1).
